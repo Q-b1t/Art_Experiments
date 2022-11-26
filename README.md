@@ -10,6 +10,7 @@ chmod u+x create.sh
 ```
 Raise the service:
 ```
+docker-compose build
 docker-compose run --rm canvas_sketch sh
 ```
 #### Note: ```create.sh``` only works on linux or wls
