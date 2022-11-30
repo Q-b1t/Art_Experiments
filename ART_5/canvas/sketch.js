@@ -49,6 +49,7 @@ const sketch = ({ context, width, height }) => {
       agent.update();
       agent.draw(context);
       agent.bounce(width,height);
+      //agent.wrap(width,height);
     });
     
   };
@@ -86,6 +87,15 @@ class Agent{
   update() {
     this.pos.x += this.vel.x;
     this.pos.y += this.vel.y;
+  }
+
+  // Bounce alternative: the agent will return to the other side if it reaches the edge
+  wrap(width,height){
+    if(this.pos.x <= 0) this.pos.x = width;
+    if(this.pos.x >= width) this.pos.x = 0;
+    if(this.pos.y <= 0) this.pos.x = height;
+    if(this.pos.y >= height) this.pos.x = 0;
+
   }
 
   
