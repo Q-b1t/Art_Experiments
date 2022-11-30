@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  canvas_sketch:
+    container_name: sketch
+    build: .
+    user: "root"
+    ports:
+      - "9966:9966"
+    restart: always
+    volumes:
+      - ./canvas:/canvas
+    command: ["node", "/canvas", "sketch.js"]
