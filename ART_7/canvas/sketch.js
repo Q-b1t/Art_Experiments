@@ -1,13 +1,14 @@
 const canvasSketch = require('canvas-sketch');
+const random = require('canvas-sketch-util/random');
 
 const settings = {
   dimensions: [ 1080, 1080 ]
 };
 
 // declare the text
-let text = "Q";
+let text = "A";
 let fontSize = 1200;
-let fontFamily = 'Courier New';
+let fontFamily = 'serif';
 
 // we need to create another grid
 const typeCanvas = document.createElement("canvas");
@@ -15,7 +16,7 @@ const typeContext = typeCanvas.getContext("2d");
 
 const sketch = ({ context, width, height }) => {
 
-  const cell = 20;
+  const cell = 21;
   const cols = Math.floor(width / cell);
   const rows = Math.floor(height / cell);
   const numCells = cols * rows;
@@ -62,7 +63,15 @@ const sketch = ({ context, width, height }) => {
     // get rba channels in the data key
     const typeData = typeContext.getImageData(0,0,cols,rows).data;
     
+    context.fillStyle = 'black';
+
+    context.fillRect(0,0,width,height);
+
+    context.textBaseLine = "middle";
+    context.textAlign = "center";
+
     context.drawImage(typeCanvas,0,0);
+
 
     for(let i = 0; i < numCells; i++){
       const col = i % cols;
@@ -75,6 +84,11 @@ const sketch = ({ context, width, height }) => {
       const b = typeData[i * 4 + 2];
       const a = typeData[i * 4 + 3];
 
+      const glyph = getGlyph(r); // get the glypg based on  the brightness
+
+      context.font = `${cell * 2}, ${g}, ${b}`;
+      if(Math.random() < 0.1) context.font = `${cell * 10}, ${g}, ${b}`;
+
       context.fillStyle = `rgb(${r},${g},${b})`
 
       context.save();
@@ -82,14 +96,23 @@ const sketch = ({ context, width, height }) => {
       context.translate(cell * 0.5, cell * 0.5);
       //context.fillRect(0,0,cell,cell);
       context.beginPath();
-      context.arc(0,0,cell * 0.5,0,Math.PI * 2);
-      context.fill();
+      context.fillText(glyph,0,0);
       context.restore();
 
     }
 
   };
 };
+
+// get a random string based on channel 
+const getGlyph = (v) => {
+  if(v < 50) return '';
+  if(v < 100) return '.';
+  if(v < 150) return '-';
+  if(v < 200) return '+';
+  const arr = ["mariana","q","xd","quantum"];
+  return random.pick(arr);
+}
 
 // instead of drawing in context we will draw into typeContext
 const onKeyUp = (e) => {
