@@ -4,10 +4,10 @@ const random = require("canvas-sketch-util/random");
 
 
 const settings = {
-  dimensions: [ 1080, 1080 ],
+  dimensions: [ 1200, 1200 ],
   animate: true,
-  fps: 1,
-  duration: 20,
+  fps: 5,
+  duration: 25,
   scaleToView: true,
   playbackRate: 'throttle'
 };
@@ -15,28 +15,41 @@ const settings = {
 
 
 const sketch = () => {
-  let base = new Base(2,700,'red',math.degToRad(30),'s');
+
+
+  // flower petals
+  let base1 = new Base(4,800,'orange',math.degToRad(0),'s',true);
+  let base2 = new Base(4,766,'purple',math.degToRad(0),'s',true);
+  let base3 = new Base(4,733,'white',math.degToRad(45),'s',false);
+  let base4 = new Base(4,700,'red',math.degToRad(45),'s',false);
 
   return ({ context, width, height }) => {
     context.fillStyle = 'black';
     context.fillRect(0, 0, width, height);
 
+    base1.spin(math.degToRad(1));
+    base1.draw(context,width,height);
 
-    
-    base.spin(math.degToRad(10));
-    base.draw(context,width,height);
+    base2.spin(math.degToRad(1));
+    base2.draw(context,width,height);
+
+    base3.spin(math.degToRad(2));
+    base3.draw(context,width,height);
+
+    base4.spin(math.degToRad(2));
+    base4.draw(context,width,height);
     
   };
 };
 
 class Base {
-  constructor(num,size,color,startAngle,shape){
+  constructor(num,size,color,startAngle,shape,clockwise){
     this.num = num; // num of figures
-    //this.shape = shape; // shape (square or elipse)
     this.color = color; // color
     this.startAngle = startAngle; // starting angle
     this.size = size; // size of the figure
     this.shape = shape; // s or e
+    this.clockwise = clockwise;
   }
 
   draw (context,w,h){
@@ -44,36 +57,38 @@ class Base {
     const cx = w * 0.5;
     const cy = h * 0.5;
     // interval of rate of change in angle
-    const slice = math.degToRad(360 / this.num);
-    console.log("slice",math.radToDeg(slice));
+    const slice = math.degToRad(180 / this.num);
     
-    // save actual context
-    context.save();
+    // define spinning direction
+    const spinFactor = this.clockwise ? 1 : -1; 
 
-    // initial conditions
-    context.translate(cx,cy);
-    context.rotate(-this.startAngle);
-    context.fillStyle = this.color;
 
-    // draw the circles 
-    for(let i = 1; i <= this.num; i ++){
+    for(let i = 0; i < this.num; i++){
+      const angle = slice * i;
+      
+      // save actual context
+      context.save();
+
+      // initial conditions
+      context.translate(cx,cy);
+      context.rotate(this.startAngle * spinFactor);
+      context.fillStyle = this.color;
+
+      context.rotate(angle * spinFactor);
+      
+      // draw depending on shape
       if(this.shape == 's'){
         context.fillRect(-this.size / 2,-this.size / 2,this.size,this.size);
-
-      }
-      else{
+      }else{
+        context.beginPath();
         context.ellipse(0, 0, this.size / 8, this.size, -Math.PI / 5 , 0, 2 * Math.PI);
-        context.fill();  
+        context.fill();
       }
-  
+      context.restore();
 
-      // rotate for new figure
-      const angle =  this.startAngle * i;
-      console.log("angle",math.radToDeg(angle));
-      context.rotate(-angle);
     }
-    // restore context
-    context.restore();
+
+
   
   }
 
@@ -84,6 +99,16 @@ class Base {
 }
 
 
+/*
+      if(this.shape == 's'){
+        context.fillRect(-this.size / 2,-this.size / 2,this.size,this.size);
+
+      }
+      else{
+        context.ellipse(0, 0, this.size / 8, this.size, -Math.PI / 5 , 0, 2 * Math.PI);
+        context.fill();  
+      }
+*/
 
 
 
