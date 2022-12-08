@@ -7,7 +7,7 @@ const random = require("canvas-sketch-util/random");
 const settings = {
   dimensions: [ 1550, 1550 ],
   animate: true,
-  fps: 4,
+  fps: 3,
   duration: 20,
   scaleToView: true,
   playbackRate: 'throttle'
@@ -25,6 +25,10 @@ const sketch = () => {
     "leavesContour2":getColor(),
     "base1":"rgb(255,128,0)",
     "base2":"rgb(127,0,255)",
+    "petals1":getColor(),
+    "petals2":getColor(),
+    "petals3":"black",
+
 
   };
 
@@ -35,7 +39,9 @@ const sketch = () => {
   let base4 = new Base(4,700,'red',math.degToRad(45),'s',false);
 
   // flower petals (internal)
-  let petal1 = new Petals(8,50,'c','purple',math.degToRad(50),250,false);
+  let petal1 = new Petals(8,50,'c',colors["petals1"],math.degToRad(50),250,false);
+  let petal2 = new Petals(8,50,'s',colors["petals2"],math.degToRad(50),225,false);
+  let petal3 = new Petals(8,60,'c',colors["petals3"],math.degToRad(51),245,false);
 
 
   // leaves:
@@ -83,9 +89,15 @@ const sketch = () => {
     base4.draw(context,width,height);
 
     // animate interla flower petals
-    petal1.spin(math.degToRad(2));
+
+    petal3.spin(math.degToRad(2));
+    petal3.draw(context,width,height);
+
+    petal1.spin(math.degToRad(2),getColor());
     petal1.draw(context,width,height);
 
+    petal2.spin(math.degToRad(2),getColor());
+    petal2.draw(context,width,height);
 
     
   };
