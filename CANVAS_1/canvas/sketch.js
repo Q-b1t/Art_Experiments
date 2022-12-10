@@ -20,7 +20,7 @@ const sketch = () => {
     context.fillRect(0, 0, width, height);
 
     // column number
-    const numCols = 5;
+    const numCols = 4;
     // grid separation
     const colWidth = width / numCols;
 
@@ -31,8 +31,8 @@ const sketch = () => {
     const shapes = ['s','c'];
     
     // number of figures and figures per region
-    const totalFigures = 15;
-    const coloredFigures = random.range(2,5);
+    const totalFigures = 20;
+    const coloredFigures = random.range(2,6);
     const figsPerRegion = totalFigures / numCols;
 
     // array to store the figures
@@ -78,6 +78,7 @@ const sketch = () => {
     const minDist = 600;
     const maxDist = 1400; 
     for(let i = 0; i < figures.length; i++){
+      context.strokeStyle = getColor();
       const figure = figures[i];
       for(let j = i+1; j < figures.length; j++){
         const other = figures[j];
@@ -85,7 +86,6 @@ const sketch = () => {
         if(dist > minDist && dist < maxDist){
           context.beginPath();          
           context.lineWidth = math.mapRange(dist,minDist,maxDist,12,6);
-          context.strokeStyle = getColor();
           context.moveTo(figure.pos.x,figure.pos.y); // move the pen to the beginning of the line
           context.lineTo(other.pos.x,other.pos.y);
           context.stroke();
