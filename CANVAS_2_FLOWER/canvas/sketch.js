@@ -68,13 +68,13 @@ const sketch = () => {
   let circles1 = new Petals(12,25,'c',colors["circles1"],math.degToRad(48),128,false);
 
   // inner leafs
-  let leavesInnerContour1 = new Base(2,380,colors["leavesInnerC1"],math.degToRad(0),'e',false);
-  let leavesInner1 = new Base(2,350,colors["leavesInner1"],math.degToRad(0),'e',false);
-  let leavesInnerContour2 = new Base(2,320,colors["leavesInnerC2"],math.degToRad(0),'e',false);
-  let leavesInner2 = new Base(2,300,colors["leavesInner2"],math.degToRad(0),'e',false);
+  let leavesInnerContour1 = new Base(2,380,colors["leavesInnerC1"],math.degToRad(0),'e',true);
+  let leavesInner1 = new Base(2,350,colors["leavesInner1"],math.degToRad(0),'e',true);
+  let leavesInnerContour2 = new Base(2,320,colors["leavesInnerC2"],math.degToRad(0),'e',true);
+  let leavesInner2 = new Base(2,300,colors["leavesInner2"],math.degToRad(0),'e',true);
 
     // center
-    let center = new Center(5,200);
+    let center = new Center(5,150);
 
   return ({ context, width, height }) => {
 
@@ -163,6 +163,8 @@ const sketch = () => {
     circles(context,width,height,100,'black');
 
     circlesMany(context,width,height);
+
+    center.draw(context,width,height);
 
 
   };
