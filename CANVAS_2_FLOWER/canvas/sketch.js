@@ -73,9 +73,8 @@ const sketch = () => {
   let leavesInnerContour2 = new Base(2,320,colors["leavesInnerC2"],math.degToRad(0),'e',false);
   let leavesInner2 = new Base(2,300,colors["leavesInner2"],math.degToRad(0),'e',false);
 
-  // center
-  let center = new Center(5,200);
-
+    // center
+    let center = new Center(5,200);
 
   return ({ context, width, height }) => {
 
@@ -96,6 +95,8 @@ const sketch = () => {
     leaves2.spin(math.degToRad(10));
     leaves2.draw(context,width,height);
 
+
+    
     // animate external flower petals
     
     base1.spin(math.degToRad(1));
@@ -131,7 +132,7 @@ const sketch = () => {
 
     squares1.spin(math.degToRad(15),getColor());
     squares1.draw(context,width,height);
-
+    
     circles(context,width,height,255,getColor());
     circles(context,width,height,240,'black');
     circles(context,width,height,235,getColor());
@@ -154,43 +155,31 @@ const sketch = () => {
     leavesInner2.spin(math.degToRad(15));
     leavesInner2.draw(context,width,height);
 
+
     circles(context,width,height,160,'black');
     circles(context,width,height,155,getColor());
     circles(context,width,height,130,'black');
     circles(context,width,height,125,getColor());
     circles(context,width,height,100,'black');
 
-    let count = 100;
-    let black = false;
-    let color = "black"
-    while(count > 10){
-      color = black ? "black":getColor();
-      circles(context,width,height,count,color);
-      count = black ? count -2 : count -10;
-      black = !black;
+    circlesMany(context,width,height);
 
-    }
 
-    center.draw(context,width,height);
-
-    
   };
 };
 
-let circles = (context,w,h,radius,color) => {
-  // center of the flower
-  const cx = w * 0.5;
-  const cy = h * 0.5;
+let circlesMany = (context,width,height,count = 100) => {
+  let black = false;
+  let color = "black"
+  while(count > 10){
+    color = black ? "black":getColor();
+    circles(context,width,height,count,color);
+    count = black ? count -2 : count -10;
+    black = !black;
 
-  // draw circle
-  context.save();
-  context.beginPath();
-  context.fillStyle = color;
-  context.translate(cx,cy);
-  context.arc(0,0,radius,0,Math.PI * 2);
-  context.fill();
-  context.restore();
+  }
 }
+
 
 class Center{
   constructor(num,maxDistance){
@@ -214,13 +203,26 @@ class Center{
       context.stroke();
     }
 
-
-
-
-
     context.restore();
   }
 }
+
+let circles = (context,w,h,radius,color) => {
+  // center of the flower
+  const cx = w * 0.5;
+  const cy = h * 0.5;
+
+  // draw circle
+  context.save();
+  context.beginPath();
+  context.fillStyle = color;
+  context.translate(cx,cy);
+  context.arc(0,0,radius,0,Math.PI * 2);
+  context.fill();
+  context.restore();
+}
+
+
 
 class Base {
   constructor(num,size,color,startAngle,shape,clockwise){
@@ -260,6 +262,7 @@ class Base {
       if(this.shape == 's'){
         context.fillRect(-this.size / 2,-this.size / 2,this.size,this.size);
       }else{
+        context.beginPath();
         context.ellipse(0, 0, this.size / 8, this.size, -Math.PI / 5 , 0, 2 * Math.PI);
         context.fill();
       }
