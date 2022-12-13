@@ -16,16 +16,20 @@ const settings = {
 
 
 
+
 const sketch = () => {
+
 
   // colors
   let colors = {
-    "leaves1":"rgb(102,204,0)",
-    "leaves2":"rgb(0,153,0)",
+    "leaves1":risoColors[77].hex,
+    "leaves2":risoColors[34].hex,
     "leavesContour1":getColor(),
     "leavesContour2":getColor(),
-    "base1":"rgb(255,128,0)",
-    "base2":"rgb(127,0,255)",
+    "base1":risoColors[60].hex,
+    "base2":risoColors[46].hex,
+    "base3": "white",
+    "base4": risoColors[5].hex,
     "petals1":getColor(),
     "petals2":getColor(),
     "petals3":"black",
@@ -33,18 +37,20 @@ const sketch = () => {
     "squaresContour1":"black",
     "circles1":getColor(),
     "circlessContour1":"black",
-    "leavesInner1":"rgb(255,128,0)",
-    "leavesInner2":"rgb(0,172,230)",
+    "leavesInner1":risoColors[59].hex,
+    "leavesInner2":risoColors[21].hex,
     "leavesInnerC1":"black",
     "leavesInnerC2":"black",
 
   };
 
+  console.log(risoColors.length);
+
   // flower petals (external)
   let base1 = new Base(4,800,colors["base1"],math.degToRad(0),'s',true);
   let base2 = new Base(4,766,colors["base2"],math.degToRad(0),'s',true);
-  let base3 = new Base(4,733,'white',math.degToRad(45),'s',false);
-  let base4 = new Base(4,700,'red',math.degToRad(45),'s',false);
+  let base3 = new Base(4,733,colors["base3"],math.degToRad(45),'s',false);
+  let base4 = new Base(4,700,colors["base4"],math.degToRad(45),'s',false);
 
   // flower petals (internal)
   let petal1 = new Petals(8,50,'c',colors["petals1"],math.degToRad(50),250,false);
@@ -364,6 +370,7 @@ class Petals {
 
 // get a random RGB COLOR
 let getColor = () =>{
+  /*
   let r,g,b;
   let fillColor = 'red';
   r = random.range(0,255);
@@ -371,6 +378,8 @@ let getColor = () =>{
   b = random.range(0,255);
   fillColor = `rgb(${r},${g},${b})`;
   return fillColor;
+  */
+ return random.pick(risoColors).hex;
 }
 
 
