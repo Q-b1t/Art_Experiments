@@ -2,6 +2,7 @@ const canvasSketch = require('canvas-sketch');
 const { degToRad } = require('canvas-sketch-util/math');
 const math = require("canvas-sketch-util/math");
 const random = require("canvas-sketch-util/random");
+const risoColors = require('riso-colors');
 
 
 const settings = {
