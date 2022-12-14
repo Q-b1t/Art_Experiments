@@ -1,6 +1,7 @@
 const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random');
 const math = require("canvas-sketch-util/math");
+const risoColors = require('riso-colors');
 
 
 const settings = {
@@ -76,7 +77,27 @@ const sketch = () => {
     
     // draw cool lines
     const minDist = 600;
-    const maxDist = 1400; 
+    const maxDist = 1200;
+
+    /*
+    const lineColor = getColor();
+    // first point in the figure
+    context.save();
+    context.strokeStyle = getColor();
+    // put the pen in the first figure 
+    context.moveTo(figures[0].pos.x,figures[0].pos.y);
+    for(let i = 1; i < figures.length; i++){
+      context.lineTo(figures[i].pos.x,figures[i].pos.y);
+      context.lineWidth = 12;
+    }
+
+    context.closePath();
+    context.stroke();
+
+    context.restore();
+    */
+
+    
     for(let i = 0; i < figures.length; i++){
       context.strokeStyle = getColor();
       const figure = figures[i];
@@ -85,7 +106,7 @@ const sketch = () => {
         const dist = figure.pos.getDistance(other.pos);
         if(dist > minDist && dist < maxDist){
           context.beginPath();          
-          context.lineWidth = math.mapRange(dist,minDist,maxDist,12,6);
+          context.lineWidth = math.mapRange(dist,minDist,maxDist,8,20);
           context.moveTo(figure.pos.x,figure.pos.y); // move the pen to the beginning of the line
           context.lineTo(other.pos.x,other.pos.y);
           context.stroke();
@@ -171,7 +192,9 @@ class Figure {
   }
 }
 
+// get a random RGB COLOR
 let getColor = () =>{
+  /*
   let r,g,b;
   let fillColor = 'red';
   r = random.range(0,255);
@@ -179,6 +202,14 @@ let getColor = () =>{
   b = random.range(0,255);
   fillColor = `rgb(${r},${g},${b})`;
   return fillColor;
+  */
+ color = random.pick(risoColors);
+ if(color.name != "Black" && color.name != "White" && color.name != "Gray" ){
+  return color.hex; 
+ }else{
+  return getColor();
+ }
+
 }
 
 canvasSketch(sketch, settings);
