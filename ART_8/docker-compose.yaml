@@ -10,3 +10,7 @@ services:
     volumes:
       - ./canvas:/canvas
     command: ["node", "/canvas", "sketch.js"]
+
+networks:
+  artnet:
+    external: true
