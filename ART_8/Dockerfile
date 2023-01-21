@@ -8,7 +8,7 @@ npm install canvas-sketch-util --save && \
 npm install tweakpane --save && \
 npm install load-asset --save && \
 npm install jimp --save && \
-npm install riso-colors --save && \
-npm install colormap --save && \
-npm install eases --save
+npm install riso-colors --save 
+
+
 EXPOSE 9966

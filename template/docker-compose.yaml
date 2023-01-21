@@ -7,6 +7,8 @@ services:
     ports:
       - "9966:9966"
     restart: always
+    networks:
+      - artnet
     volumes:
       - ./canvas:/canvas
     command: ["node", "/canvas", "sketch.js"]
