@@ -19,5 +19,5 @@ done
 
 cd ../$name 
 echo "canvas/node_modules" > .gitignore
-touch canvas
+mkdir canvas
 cd ..

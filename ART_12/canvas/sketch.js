@@ -1,100 +1,136 @@
 const canvasSketch = require('canvas-sketch');
 const math = require('canvas-sketch-util/math');
+const random = require('canvas-sketch-util/random');
+const eases = require('eases');
 
 const settings = {
-  dimensions: [ 1080, 1080 ],
-  animate:true,
+	dimensions: [ 1080, 1080 ],
+	animate: true,
 };
 
 let audio;
-let audioContext,audioData, sourceNode, analyserNode;
+let audioContext, audioData, sourceNode, analyserNode;
 let manager;
+let minDb, maxDb;
 
 const sketch = () => {
-  const numCircles = 5;
-  const numSlices = 9;
-  const slice = Math.PI * 2 / numSlices;
-  const radius = 200;
-  const bins = [4,28,44,120]
-  
-  return ({ context, width, height }) => {
-    context.fillStyle = '#EEEAE0';
-    context.fillRect(0, 0, width, height);
+	const numCircles = 5;
+	const numSlices = 9;
+	const slice = Math.PI * 2 / numSlices;
+	const radius = 200;
 
-    //if(!audioContext) return;
-    // read frequency data
-    //analyserNode.getFloatFrequencyData(audioData);
+	const bins = [];
+	const lineWidths = [];
 
-    context.save();
-    context.translate(width/2, height/2);
+	let lineWidth, bin, mapped;
 
-    for(let i = 0; i < numCircles; i++){
-      context.save();
-      for(let j = 0; j < numSlices; j++){
-        context.rotate(slice);
-        context.lineWidth = 10;
+	for (let i = 0; i < numCircles * numSlices; i++) {
+		bin = random.rangeFloor(4, 64);
+		if (random.value() > 0.5) bin = 0;
+		bins.push(bin);
+	}
 
-        context.beginPath();
-        context.arc(0,0,radius + i * 50,0,slice);
-        context.stroke();
-      }
-      context.restore();
-    }
-    context.restore();
+	for (let i = 0; i < numCircles; i++) {
+		const t = i / (numCircles - 1);
+		lineWidth = eases.quadIn(t) * 200 + 20;
+		lineWidths.push(lineWidth);
+	}
 
-  };
+	return ({ context, width, height }) => {
+		context.fillStyle = '#EEEAE0';
+		context.fillRect(0, 0, width, height);
+
+		if (!audioContext) return;
+
+		analyserNode.getFloatFrequencyData(audioData);
+
+		context.save();
+		context.translate(width * 0.5, height * 0.5);
+
+		let cradius = radius;
+
+		for (let i = 0; i < numCircles; i++) {
+			context.save();
+
+			for (let j = 0; j < numSlices; j++) {
+				context.rotate(slice);
+				context.lineWidth = lineWidths[i];
+
+				bin = bins[i * numSlices + j];
+				if (!bin) continue;
+
+				mapped = math.mapRange(audioData[bin], minDb, maxDb, 0, 1, true);
+
+				lineWidth = lineWidths[i] * mapped;
+				if (lineWidth < 1) continue;
+
+				context.lineWidth = lineWidth;
+
+				context.beginPath();
+				context.arc(0, 0, cradius + context.lineWidth * 0.5, 0, slice);
+				context.stroke();
+			}
+
+			cradius += lineWidths[i];
+
+			context.restore();
+		}
+
+		context.restore();
+	};
 };
 
-const addListener = () => {
-  window.addEventListener("mouseup",() => {
-    // creatr audio context only if it does not exist
-    if(!audioContext)createAudio();
-    if(audio.paused){
-      audio.play();
-      manager.play();
-    }
-    else{ 
-      audio.pause();
-      manager.pause();
-    }
-  });
+const addListeners = () => {
+	window.addEventListener('mouseup', () => {
+		if (!audioContext) createAudio();
+
+		if (audio.paused) {
+			audio.play();
+			manager.play();
+		}
+		else {
+			audio.pause();
+			manager.pause();
+		}
+	});
 };
 
 const createAudio = () => {
-  audio = document.createElement("audio");
-  audio.src = "/audio/OMEGA Instrumental.mp3";
-  audio.autoplay = true;
+	audio = document.createElement('audio');
+	audio.src = 'audio/audio_muestra_jp.mp3';
 
-  audioContext = new AudioContext();
-  sourceNode = audioContext.createMediaElementSource(audio);
-  // connect to the speaker
-  sourceNode.connect(audioContext.destination);
+	audioContext = new AudioContext();
 
-  analyserNode = audioContext.createAnalyser();
-  analyserNode.fftSize = 1024;
-  analyserNode.smoothingTimeConstant = 0.8;
-  // connect the source node to the analyser node
-  sourceNode.connect(analyserNode);
+	sourceNode = audioContext.createMediaElementSource(audio);
+	sourceNode.connect(audioContext.destination);
 
-  // create array to extract audio data. NUmber of data values
-  audioData = new Float32Array(analyserNode.frequencyBinCount);
+	analyserNode = audioContext.createAnalyser();
+	analyserNode.fftSize = 512;
+	analyserNode.smoothingTimeConstant = 0.9;
+	sourceNode.connect(analyserNode);
 
-}
+	minDb = analyserNode.minDecibels;
+	maxDb = analyserNode.maxDecibels;
 
-const getAverage = (data) => {
-  let sum = 0;
-  for(let i = 0; i < data.length; i++){
-    sum += data[i];
-  }
-  return sum/data.length;
-}
+	audioData = new Float32Array(analyserNode.frequencyBinCount);
 
-
-const start = async () => {
-  addListener();
-  manager = await canvasSketch(sketch, settings);  
-  manager.pause();
+	// console.log(audioData.length);
 };
 
+const getAverage = (data) => {
+	let sum = 0;
+
+	for (let i = 0; i < data.length; i++) {
+		sum += data[i];
+	}
+
+	return sum / data.length;
+};
+
+const start = async () => {
+	addListeners();
+	manager = await canvasSketch(sketch, settings);
+	manager.pause();
+};
 
 start();
